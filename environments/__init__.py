@@ -100,3 +100,9 @@ register(
     entry_point='environments.navigation.gridworld:GridNavi',
     kwargs={'num_cells': 5, 'num_steps': 15},
 )
+
+register(
+    'GridNavi-InfoState-v0',
+    entry_point='environments.navigation.gridworld_info:GridNaviInfo',
+    kwargs={'num_cells': 6, 'num_steps': 18},
+)

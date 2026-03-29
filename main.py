@@ -10,7 +10,7 @@ import torch
 
 # get configs
 from config.gridworld import \
-    args_grid_belief_oracle, args_grid_rl2, args_grid_varibad
+    args_grid_belief_oracle, args_grid_rl2, args_grid_varibad, args_grid_varibad_info
 from config.pointrobot import \
     args_pointrobot_multitask, args_pointrobot_varibad, args_pointrobot_rl2, args_pointrobot_humplik
 from config.mujoco import \
@@ -41,6 +41,8 @@ def main():
         args = args_grid_varibad.get_args(rest_args)
     elif env == 'gridworld_rl2':
         args = args_grid_rl2.get_args(rest_args)
+    elif env == 'gridworld_varibad_info':
+        args = args_grid_varibad_info.get_args(rest_args)
 
     # --- PointRobot 2D Navigation ---
 

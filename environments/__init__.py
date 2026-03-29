@@ -102,7 +102,7 @@ register(
 )
 
 register(
-    'GridNavi-InfoState-v0',
+    'GridNaviInfoState-v0',
     entry_point='environments.navigation.gridworld_info:GridNaviInfo',
-    kwargs={'num_cells': 6, 'num_steps': 18},
+    kwargs={'num_cells': 7, 'num_steps': 21},
 )

@@ -26,20 +26,23 @@ class GridNavi(gym.Env):
         self._max_episode_steps = num_steps
         self.step_count = 0
 
-        self.observation_space = spaces.Box(low=0, high=self.num_cells - 1, shape=(2,))
+        self.observation_space = spaces.Box(low=-1, high=self.num_cells - 1, shape=(4,))
         self.action_space = spaces.Discrete(5)  # noop, up, right, down, left
         self.task_dim = 2
         self.belief_dim = 25
 
         # possible starting states
-        self.starting_state = (0.0, 0.0)
+        self.starting_state = (2.0, 2.0, -1.0, -1.0)
+
+        # possible info states 
+        self.possible_info_locations = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]
+        self.info_loc = None # set in reset_task
 
         # goals can be anywhere except on possible starting states and immediately around it
         self.possible_goals = list(itertools.product(range(num_cells), repeat=2))
-        self.possible_goals.remove((0, 0))
-        self.possible_goals.remove((0, 1))
-        self.possible_goals.remove((1, 1))
-        self.possible_goals.remove((1, 0))
+        possible_starting = list(itertools.product(range(4), repeat=2))
+        for state in possible_starting:
+            self.possible_goals.remove(state)
 
         self.task_dim = 2
         self.num_tasks = self.num_states
@@ -57,6 +60,7 @@ class GridNavi(gym.Env):
         else:
             self._goal = np.array(task)
         self._reset_belief()
+        self.info_loc = random.choice(self.possible_info_locs)
         return self._goal
 
     def _reset_belief(self):
@@ -69,9 +73,10 @@ class GridNavi(gym.Env):
     def update_belief(self, state, action):
 
         on_goal = state[0] == self._goal[0] and state[1] == self._goal[1]
+        on_info = state[0] == self.info_loc[0] and state[1] == self.info_loc[1]
 
         # hint
-        if action == 5 or on_goal:
+        if action == 5 or on_goal or on_info:
             possible_goals = self.possible_goals.copy()
             possible_goals.remove(tuple(self._goal))
             wrong_hint = possible_goals[random.choice(range(len(possible_goals)))]
@@ -111,6 +116,13 @@ class GridNavi(gym.Env):
             self._env_state[1] = max([self._env_state[1] - 1, 0])
         elif action == 4:  # left
             self._env_state[0] = max([self._env_state[0] - 1, 0])
+        
+        if self._env_state[0] == self.info_loc[0] and self._env_state[1] == self.info_loc[1]:
+            self._env_state[2] = self._goal[0]
+            self._env_state[3] = self._goal[1]
+        else:
+            self._env_state[2] = -1.0
+            self._env_state[3] = -1.0
 
         return self._env_state
 
@@ -250,6 +262,7 @@ class GridNavi(gym.Env):
         for episode_idx in range(args.max_rollouts_per_task):
 
             curr_goal = env.get_task()
+            curr_info_loc = env.info_loc
             curr_rollout_rew = []
             curr_rollout_goal = []
 
@@ -324,6 +337,7 @@ class GridNavi(gym.Env):
             episode_returns.append(sum(curr_rollout_rew))
             episode_lengths.append(step_idx)
             episode_goals.append(curr_goal)
+            info_locs.append(curr_info_loc)
 
         # clean up
 
@@ -340,7 +354,7 @@ class GridNavi(gym.Env):
 
         rew_pred_means, rew_pred_vars = plot_bb(env, args, episode_all_obs, episode_goals, reward_decoder,
                                                 episode_latent_means, episode_latent_logvars,
-                                                image_folder, iter_idx, episode_beliefs)
+                                                image_folder, iter_idx, episode_beliefs, info_locs)
 
         if reward_decoder:
             plot_rew_reconstruction(env, rew_pred_means, rew_pred_vars, image_folder, iter_idx)
@@ -402,7 +416,7 @@ def plot_rew_reconstruction(env,
 
 
 def plot_bb(env, args, episode_all_obs, episode_goals, reward_decoder,
-            episode_latent_means, episode_latent_logvars, image_folder, iter_idx, episode_beliefs):
+            episode_latent_means, episode_latent_logvars, image_folder, iter_idx, episode_beliefs, info_locs):
     """
     Plot behaviour and belief.
     """
@@ -421,6 +435,7 @@ def plot_bb(env, args, episode_all_obs, episode_goals, reward_decoder,
 
             curr_obs = episode_all_obs[episode_idx][:step_idx + 1]
             curr_goal = episode_goals[episode_idx]
+            curr_info_loc = info_locs[episode_idx]
 
             if episode_latent_means is not None:
                 curr_means = episode_latent_means[episode_idx][:step_idx + 1]
@@ -432,7 +447,7 @@ def plot_bb(env, args, episode_all_obs, episode_goals, reward_decoder,
                         1 + episode_idx * (1 + math.ceil(env._max_episode_steps)) + step_idx),
 
             # plot the behaviour
-            plot_behaviour(env, curr_obs, curr_goal)
+            plot_behaviour(env, curr_obs, curr_goal, curr_info_loc)
 
             if reward_decoder is not None:
                 # visualise belief in env
@@ -472,7 +487,7 @@ def plot_bb(env, args, episode_all_obs, episode_goals, reward_decoder,
     return rew_pred_means, rew_pred_vars
 
 
-def plot_behaviour(env, observations, goal):
+def plot_behaviour(env, observations, goal, info_loc):
     num_cells = int(env.observation_space.high[0] + 1)
 
     # draw grid
@@ -489,11 +504,13 @@ def plot_behaviour(env, observations, goal):
         observations = torch.cat(observations)
     observations = observations.cpu().numpy() + 0.5
     goal = np.array(goal) + 0.5
+    info_loc = np.array(info_loc) + 0.5
 
     # visualise behaviour, current position, goal
     plt.plot(observations[:, 0], observations[:, 1], 'b-')
     plt.plot(observations[-1, 0], observations[-1, 1], 'b.')
     plt.plot(goal[0], goal[1], 'kx')
+    plt.plot(info_loc[0], info_loc[1], 's', color='yellow')
 
     # make it look nice
     plt.xticks([])

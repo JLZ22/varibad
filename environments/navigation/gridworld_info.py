@@ -173,6 +173,7 @@ class GridNavi(gym.Env):
         if len(goal_shape) > 2:
             goals = goals.reshape(-1, goals.shape[-1])
 
+        goals = goals.to('cpu')
         classes = mat[goals[:, 0], goals[:, 1]]
         classes = classes.reshape(goal_shape[:-1])
 

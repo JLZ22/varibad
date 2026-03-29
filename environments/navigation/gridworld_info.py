@@ -92,6 +92,9 @@ class GridNaviInfo(gym.Env):
 
         return self._belief_state
 
+    def get_info_loc(self):
+        return self.info_loc
+    
     def get_task(self):
         return self._goal.copy()
 
@@ -263,7 +266,7 @@ class GridNaviInfo(gym.Env):
         for episode_idx in range(args.max_rollouts_per_task):
 
             curr_goal = env.get_task()
-            curr_info_loc = env.info_loc
+            curr_info_loc = env.get_info_loc()
             curr_rollout_rew = []
             curr_rollout_goal = []
 

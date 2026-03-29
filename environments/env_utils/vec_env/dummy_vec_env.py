@@ -100,6 +100,9 @@ class DummyVecEnv(VecEnv):
 
     def get_task(self):
         return self.envs[0].unwrapped.get_task()
+    
+    def get_info_loc(self):
+        return self.envs[0].unwrapped.get_info_loc()
 
     def get_belief(self):
         return self.envs[0].unwrapped.get_belief()

@@ -126,6 +126,12 @@ class SubprocVecEnv(VecEnv):
         for remote in self.remotes:
             remote.send(('get_task', None))
         return np.stack([remote.recv() for remote in self.remotes])
+    
+    def get_task(self):
+        self._assert_not_closed()
+        for remote in self.remotes:
+            remote.send(('get_info_loc', None))
+        return np.stack([remote.recv() for remote in self.remotes])
 
     def get_belief(self):
         self._assert_not_closed()

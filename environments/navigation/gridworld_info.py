@@ -15,9 +15,9 @@ from utils import helpers as utl
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-class GridNavi(gym.Env):
+class GridNaviInfo(gym.Env):
     def __init__(self, num_cells=5, num_steps=15):
-        super(GridNavi, self).__init__()
+        super(GridNaviInfo, self).__init__()
 
         self.seed()
         self.num_cells = num_cells

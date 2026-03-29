@@ -16,12 +16,19 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
 class GridNaviInfo(gym.Env):
-    def __init__(self, num_cells=5, num_steps=15):
+    def __init__(
+        self, 
+        num_cells=5, 
+        num_steps=15, 
+        persistent_info=False, # persistent info keeps the goal location in the last two elements of the state
+        deterministic_info_location=False, # if True, does not randomly select info location. 
+    ): 
         super(GridNaviInfo, self).__init__()
 
         self.seed()
         self.num_cells = num_cells
         self.num_states = num_cells ** 2
+        self.persistent_info = persistent_info
 
         self._max_episode_steps = num_steps
         self.step_count = 0
@@ -37,6 +44,7 @@ class GridNaviInfo(gym.Env):
         # possible info states 
         self.possible_info_locations = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]
         self.info_loc = None # set in reset_task
+        self.deterministic_info_location = deterministic_info_location
 
         # goals can be anywhere except on possible starting states and immediately around it
         self.possible_goals = list(itertools.product(range(num_cells), repeat=2))
@@ -60,7 +68,8 @@ class GridNaviInfo(gym.Env):
         else:
             self._goal = np.array(task)
         self._reset_belief()
-        self.info_loc = random.choice(self.possible_info_locations)
+        if self.info_loc is None or not self.deterministic_info_location:
+            self.info_loc = random.choice(self.possible_info_locations)
         return self._goal
 
     def _reset_belief(self):
@@ -123,7 +132,7 @@ class GridNaviInfo(gym.Env):
         if self._env_state[0] == self.info_loc[0] and self._env_state[1] == self.info_loc[1]:
             self._env_state[2] = self._goal[0]
             self._env_state[3] = self._goal[1]
-        else:
+        elif not self.persistent_info:
             self._env_state[2] = -1.0
             self._env_state[3] = -1.0
 
@@ -242,6 +251,7 @@ class GridNaviInfo(gym.Env):
         episode_lengths = []
 
         episode_goals = []
+        info_locs = []
         if args.pass_belief_to_policy and (encoder is None):
             episode_beliefs = [[] for _ in range(num_episodes)]
         else:

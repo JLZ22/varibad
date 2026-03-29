@@ -10,7 +10,8 @@ import torch
 
 # get configs
 from config.gridworld import \
-    args_grid_belief_oracle, args_grid_rl2, args_grid_varibad, args_grid_varibad_info
+    args_grid_belief_oracle, args_grid_rl2, args_grid_varibad, args_grid_varibad_info_random_nonpersisting, \
+    args_grid_varibad_info_random_persisting, args_grid_varibad_info_deterministic_nonpersisting, args_grid_varibad_info_deterministic_persisting
 from config.pointrobot import \
     args_pointrobot_multitask, args_pointrobot_varibad, args_pointrobot_rl2, args_pointrobot_humplik
 from config.mujoco import \
@@ -41,8 +42,14 @@ def main():
         args = args_grid_varibad.get_args(rest_args)
     elif env == 'gridworld_rl2':
         args = args_grid_rl2.get_args(rest_args)
-    elif env == 'gridworld_varibad_info':
+    elif env == 'gridworld_varibad_info_random_nonpersisting':
         args = args_grid_varibad_info.get_args(rest_args)
+    elif env == 'gridworld_varibad_info_random_persisting':
+        args = args_grid_varibad_info_random_persisting.get_args(rest_args)
+    elif env == 'gridworld_varibad_info_deterministic_nonpersisting':
+        args = args_grid_varibad_info_deterministic_nonpersisting.get_args(rest_args)
+    elif env == 'gridworld_varibad_info_deterministic_persisting':
+        args = args_grid_varibad_info_deterministic_persisting.get_args(rest_args)
 
     # --- PointRobot 2D Navigation ---
 

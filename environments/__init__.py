@@ -102,7 +102,25 @@ register(
 )
 
 register(
-    'GridNaviInfoState-v0',
+    'GridNaviInfoState-RandomNonPersisting-v0',
     entry_point='environments.navigation.gridworld_info:GridNaviInfo',
     kwargs={'num_cells': 7, 'num_steps': 21},
+)
+
+register(
+    'GridNaviInfoState-RandomPersisting-v0',
+    entry_point='environments.navigation.gridworld_info:GridNaviInfo',
+    kwargs={'num_cells': 7, 'num_steps': 21, 'peristent_info': True},
+)
+
+register(
+    'GridNaviInfoState-DeterministicNonPersisting-v0',
+    entry_point='environments.navigation.gridworld_info:GridNaviInfo',
+    kwargs={'num_cells': 7, 'num_steps': 21, 'deterministic_info_location': True},
+)
+
+register(
+    'GridNaviInfoState-DeterministicPersisting-v0',
+    entry_point='environments.navigation.gridworld_info:GridNaviInfo',
+    kwargs={'num_cells': 7, 'num_steps': 21, 'persistent_info': True, 'deterministic_info_location': True},
 )

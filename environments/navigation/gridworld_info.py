@@ -60,7 +60,7 @@ class GridNaviInfo(gym.Env):
         else:
             self._goal = np.array(task)
         self._reset_belief()
-        self.info_loc = random.choice(self.possible_info_locs)
+        self.info_loc = random.choice(self.possible_info_locations)
         return self._goal
 
     def _reset_belief(self):

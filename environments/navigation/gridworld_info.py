@@ -22,6 +22,7 @@ class GridNaviInfo(gym.Env):
         num_steps=15, 
         persistent_info=False, # persistent info keeps the goal location in the last two elements of the state
         deterministic_info_location=False, # if True, does not randomly select info location. 
+        info_reveal_goal=True,
     ): 
         super(GridNaviInfo, self).__init__()
 

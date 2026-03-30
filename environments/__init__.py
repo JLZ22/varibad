@@ -124,3 +124,9 @@ register(
     entry_point='environments.navigation.gridworld_info:GridNaviInfo',
     kwargs={'num_cells': 7, 'num_steps': 21, 'persistent_info': True, 'deterministic_info_location': True},
 )
+
+register(
+    'GridNaviInfoState-Baseline-v0',
+    entry_point='environments.navigation.gridworld_info:GridNaviInfo',
+    kwargs={'num_cells': 7, 'num_steps': 21, 'info_reveal_goal': False},
+)

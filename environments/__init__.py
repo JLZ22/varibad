@@ -110,7 +110,7 @@ register(
 register(
     'GridNaviInfoState-RandomPersisting-v0',
     entry_point='environments.navigation.gridworld_info:GridNaviInfo',
-    kwargs={'num_cells': 7, 'num_steps': 21, 'peristent_info': True},
+    kwargs={'num_cells': 7, 'num_steps': 21, 'persistent_info': True},
 )
 
 register(

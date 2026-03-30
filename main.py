@@ -12,7 +12,7 @@ import torch
 from config.gridworld import \
     args_grid_belief_oracle, args_grid_rl2, args_grid_varibad, args_grid_varibad_info_random_nonpersisting, \
     args_grid_varibad_info_random_persisting, args_grid_varibad_info_deterministic_nonpersisting, args_grid_varibad_info_deterministic_persisting, \
-    args_grid_varibad_info_baseline
+    args_grid_varibad_info_baseline, args_grid_varibad_info_oracle
 from config.pointrobot import \
     args_pointrobot_multitask, args_pointrobot_varibad, args_pointrobot_rl2, args_pointrobot_humplik
 from config.mujoco import \
@@ -53,6 +53,8 @@ def main():
         args = args_grid_varibad_info_deterministic_persisting.get_args(rest_args)
     elif env == 'gridworld_varibad_info_baseline':
         args = args_grid_varibad_info_baseline.get_args(rest_args)
+    elif env == 'gridworld_varibad_info_oracle':
+        args = args_grid_varibad_info_oracle.get_args(rest_args)
 
     # --- PointRobot 2D Navigation ---
 

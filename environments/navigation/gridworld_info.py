@@ -22,7 +22,8 @@ class GridNaviInfo(gym.Env):
         num_steps=15, 
         persistent_info=False, # persistent info keeps the goal location in the last two elements of the state
         deterministic_info_location=False, # if True, does not randomly select info location. 
-        info_reveal_goal=True,
+        no_info=False,
+        reveal_goal=True,
     ): 
         super(GridNaviInfo, self).__init__()
 
@@ -30,6 +31,8 @@ class GridNaviInfo(gym.Env):
         self.num_cells = num_cells
         self.num_states = num_cells ** 2
         self.persistent_info = persistent_info
+        self.no_info = no_info
+        self.reveal_goal = reveal_goal
 
         self._max_episode_steps = num_steps
         self.step_count = 0
@@ -71,6 +74,10 @@ class GridNaviInfo(gym.Env):
         self._reset_belief()
         if self.info_loc is None or not self.deterministic_info_location:
             self.info_loc = random.choice(self.possible_info_locations)
+        if self.no_info:
+            self.info_loc = (-1, -1)
+        if self.reveal_goal:
+            self.starting_state[2], self.starting_state[3] = self._goal[0], self._goal[1]
         return self._goal
 
     def _reset_belief(self):
@@ -133,7 +140,7 @@ class GridNaviInfo(gym.Env):
         if self._env_state[0] == self.info_loc[0] and self._env_state[1] == self.info_loc[1]:
             self._env_state[2] = self._goal[0]
             self._env_state[3] = self._goal[1]
-        elif not self.persistent_info:
+        elif not self.persistent_info and not reveal_goal:
             self._env_state[2] = -1.0
             self._env_state[3] = -1.0
 

@@ -43,7 +43,7 @@ class GridNaviInfo(gym.Env):
         self.belief_dim = 25
 
         # possible starting states
-        self.starting_state = (2.0, 2.0, -1.0, -1.0)
+        self.starting_state = [2.0, 2.0, -1.0, -1.0]
 
         # possible info states 
         self.possible_info_locations = [(0.0, 0.0), (1.0, 0.0), (0.0, 1.0)]
@@ -77,7 +77,8 @@ class GridNaviInfo(gym.Env):
         if self.no_info:
             self.info_loc = (-1, -1)
         if self.reveal_goal:
-            self.starting_state[2], self.starting_state[3] = self._goal[0], self._goal[1]
+            self.starting_state[2] = self._goal[0]
+            self.starting_state[3] = self._goal[1]
         return self._goal
 
     def _reset_belief(self):

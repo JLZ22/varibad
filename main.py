@@ -44,7 +44,7 @@ def main():
     elif env == 'gridworld_rl2':
         args = args_grid_rl2.get_args(rest_args)
     elif env == 'gridworld_varibad_info_random_nonpersisting':
-        args = args_grid_varibad_info.get_args(rest_args)
+        args = args_grid_varibad_info_random_nonpersisting.get_args(rest_args)
     elif env == 'gridworld_varibad_info_random_persisting':
         args = args_grid_varibad_info_random_persisting.get_args(rest_args)
     elif env == 'gridworld_varibad_info_deterministic_nonpersisting':

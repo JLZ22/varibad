@@ -141,7 +141,7 @@ class GridNaviInfo(gym.Env):
         if self._env_state[0] == self.info_loc[0] and self._env_state[1] == self.info_loc[1]:
             self._env_state[2] = self._goal[0]
             self._env_state[3] = self._goal[1]
-        elif not self.persistent_info and not reveal_goal:
+        elif not self.persistent_info and not self.reveal_goal:
             self._env_state[2] = -1.0
             self._env_state[3] = -1.0
 

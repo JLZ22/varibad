@@ -436,10 +436,15 @@ class MetaLearner:
                 if self.args.norm_rew_for_policy:
                     rew_rms = self.envs.venv.ret_rms
                     utl.save_obj(rew_rms, save_path, f"env_rew_rms{idx_label}")
-                # TODO: grab from policy and save?
-                # if self.args.norm_obs_for_policy:
-                #     obs_rms = self.envs.venv.obs_rms
-                #     utl.save_obj(obs_rms, save_path, f"env_obs_rms{idx_label}")
+                # save norm params for policy 
+                if self.policy.norm_state:
+                    utl.save_obj(self.policy.state_rms, save_path, f'policy_state_rms{idx_label}')
+                if self.policy.norm_latent:
+                    utl.save_obj(self.policy.latent_rms, save_path, f'policy_latent_rms{idx_label}')
+                if self.policy.norm_belief:
+                    utl.save_obj(self.policy.belief_rms, save_path, f'policy_belief_rms{idx_label}')
+                if self.policy.norm_task:
+                    utl.save_obj(self.policy.task_rms, save_path, f'policy_task_rms{idx_label}')
 
         # --- log some other things ---
 

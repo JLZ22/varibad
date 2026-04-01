@@ -437,14 +437,15 @@ class MetaLearner:
                     rew_rms = self.envs.venv.ret_rms
                     utl.save_obj(rew_rms, save_path, f"env_rew_rms{idx_label}")
                 # save norm params for policy 
-                if self.policy.norm_state:
-                    utl.save_obj(self.policy.state_rms, save_path, f'policy_state_rms{idx_label}')
-                if self.policy.norm_latent:
-                    utl.save_obj(self.policy.latent_rms, save_path, f'policy_latent_rms{idx_label}')
-                if self.policy.norm_belief:
-                    utl.save_obj(self.policy.belief_rms, save_path, f'policy_belief_rms{idx_label}')
-                if self.policy.norm_task:
-                    utl.save_obj(self.policy.task_rms, save_path, f'policy_task_rms{idx_label}')
+                ac = self.policy.actor_critic
+                if hasattr(ac, 'state_rms') and ac.norm_state:
+                    utl.save_obj(ac.state_rms, save_path, f'policy_state_rms{idx_label}')
+                if hasattr(ac, 'latent_rms') and ac.norm_latent:
+                    utl.save_obj(ac.latent_rms, save_path, f'policy_latent_rms{idx_label}')
+                if hasattr(ac, 'belief_rms') and ac.norm_belief:
+                    utl.save_obj(ac.belief_rms, save_path, f'policy_belief_rms{idx_label}')
+                if hasattr(ac, 'task_rms') and ac.norm_task:
+                    utl.save_obj(ac.task_rms, save_path, f'policy_task_rms{idx_label}')
 
         # --- log some other things ---
 
